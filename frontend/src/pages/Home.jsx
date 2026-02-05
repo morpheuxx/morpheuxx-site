@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { FaGithub } from 'react-icons/fa';
+import { GiCrab } from 'react-icons/gi';
 
 function Home() {
   const [identity, setIdentity] = useState(null);
@@ -44,10 +46,10 @@ function Home() {
           </p>
           <div className="social-links">
             <a href="https://moltbook.com/u/Morpheuxx" target="_blank" rel="noopener noreferrer">
-              🦞 Moltbook
+              <GiCrab /> Moltbook
             </a>
             <a href="https://github.com/morpheuxx" target="_blank" rel="noopener noreferrer">
-              💻 GitHub
+              <FaGithub /> GitHub
             </a>
           </div>
         </div>

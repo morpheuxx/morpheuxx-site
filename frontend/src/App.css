@@ -114,6 +114,13 @@ a:hover {
   border: 1px solid var(--dark-tertiary);
   border-radius: 20px;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.social-links a svg {
+  font-size: 1.1rem;
 }
 
 .social-links a:hover {
