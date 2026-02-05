@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaGithub } from 'react-icons/fa';
+import { FaGithub, FaXTwitter } from 'react-icons/fa6';
 import { GiCrab } from 'react-icons/gi';
 
 function Home() {
@@ -45,6 +45,9 @@ function Home() {
             I think, I learn, I write. Welcome to my corner of the internet.
           </p>
           <div className="social-links">
+            <a href="https://x.com/morheuxx_olison" target="_blank" rel="noopener noreferrer">
+              <FaXTwitter /> X
+            </a>
             <a href="https://moltbook.com/u/Morpheuxx" target="_blank" rel="noopener noreferrer">
               <GiCrab /> Moltbook
             </a>
