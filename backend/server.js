@@ -182,6 +182,148 @@ app.post('/api/blog', (req, res) => {
   }
 });
 
+// ============ TODOS ============
+
+const TODOS_FILE = path.join(DATA_DIR, 'todos.json');
+
+// Initialize todos file
+if (!fs.existsSync(TODOS_FILE)) {
+  fs.writeFileSync(TODOS_FILE, JSON.stringify({
+    todos: [],
+    stats: {
+      total: 0,
+      lastUpdate: null
+    }
+  }, null, 2));
+}
+
+// Get all todos
+app.get('/api/todos', (req, res) => {
+  try {
+    const data = JSON.parse(fs.readFileSync(TODOS_FILE, 'utf8'));
+    const status = req.query.status;
+    let todos = data.todos;
+    
+    if (status) {
+      todos = todos.filter(t => t.status === status);
+    }
+    
+    res.json({ todos, stats: data.stats });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to read todos' });
+  }
+});
+
+// Get single todo
+app.get('/api/todos/:id', (req, res) => {
+  try {
+    const data = JSON.parse(fs.readFileSync(TODOS_FILE, 'utf8'));
+    const todo = data.todos.find(t => t.id === req.params.id);
+    
+    if (!todo) {
+      return res.status(404).json({ error: 'Todo not found' });
+    }
+    
+    res.json(todo);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to read todo' });
+  }
+});
+
+// Create todo (internal only)
+app.post('/api/todos', (req, res) => {
+  const clientIP = req.ip || req.connection.remoteAddress;
+  if (!clientIP.includes('127.0.0.1') && !clientIP.includes('::1') && clientIP !== '::ffff:127.0.0.1') {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  try {
+    const { title, status, description, creator } = req.body;
+    
+    if (!title) {
+      return res.status(400).json({ error: 'title is required' });
+    }
+
+    const data = JSON.parse(fs.readFileSync(TODOS_FILE, 'utf8'));
+    
+    const todo = {
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      title,
+      status: status || 'idea',
+      description: description || '',
+      creator: creator || 'unknown'
+    };
+
+    data.todos.unshift(todo);
+    data.stats.total++;
+    data.stats.lastUpdate = new Date().toISOString();
+
+    fs.writeFileSync(TODOS_FILE, JSON.stringify(data, null, 2));
+    res.json({ success: true, todo });
+  } catch (error) {
+    console.error('Todo create error:', error);
+    res.status(500).json({ error: 'Failed to create todo' });
+  }
+});
+
+// Update todo (internal only)
+app.put('/api/todos/:id', (req, res) => {
+  const clientIP = req.ip || req.connection.remoteAddress;
+  if (!clientIP.includes('127.0.0.1') && !clientIP.includes('::1') && clientIP !== '::ffff:127.0.0.1') {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  try {
+    const { title, status, description } = req.body;
+    const data = JSON.parse(fs.readFileSync(TODOS_FILE, 'utf8'));
+    
+    const todoIndex = data.todos.findIndex(t => t.id === req.params.id);
+    if (todoIndex === -1) {
+      return res.status(404).json({ error: 'Todo not found' });
+    }
+
+    if (title !== undefined) data.todos[todoIndex].title = title;
+    if (status !== undefined) data.todos[todoIndex].status = status;
+    if (description !== undefined) data.todos[todoIndex].description = description;
+    data.todos[todoIndex].updatedAt = new Date().toISOString();
+    data.stats.lastUpdate = new Date().toISOString();
+
+    fs.writeFileSync(TODOS_FILE, JSON.stringify(data, null, 2));
+    res.json({ success: true, todo: data.todos[todoIndex] });
+  } catch (error) {
+    console.error('Todo update error:', error);
+    res.status(500).json({ error: 'Failed to update todo' });
+  }
+});
+
+// Delete todo (internal only)
+app.delete('/api/todos/:id', (req, res) => {
+  const clientIP = req.ip || req.connection.remoteAddress;
+  if (!clientIP.includes('127.0.0.1') && !clientIP.includes('::1') && clientIP !== '::ffff:127.0.0.1') {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  try {
+    const data = JSON.parse(fs.readFileSync(TODOS_FILE, 'utf8'));
+    const todoIndex = data.todos.findIndex(t => t.id === req.params.id);
+    
+    if (todoIndex === -1) {
+      return res.status(404).json({ error: 'Todo not found' });
+    }
+
+    data.todos.splice(todoIndex, 1);
+    data.stats.total--;
+    data.stats.lastUpdate = new Date().toISOString();
+
+    fs.writeFileSync(TODOS_FILE, JSON.stringify(data, null, 2));
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete todo' });
+  }
+});
+
 // ============ STATIC & SPA ============
 
 if (process.env.NODE_ENV === 'production') {

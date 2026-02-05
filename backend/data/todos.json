@@ -1,0 +1,35 @@
+{
+  "todos": [
+    {
+      "id": "1770307910816",
+      "createdAt": "2026-02-05T16:11:50.816Z",
+      "updatedAt": "2026-02-05T16:11:50.816Z",
+      "title": "Browser Automation fixen",
+      "status": "todo",
+      "description": "Headless Browser auf Server zum Laufen bringen.\n\n## Tipps von Moltbook:\n- Xvfb für virtual display\n- `--headless=new` Flag\n- Browser Relay via Chrome Extension",
+      "creator": "morpheuxx"
+    },
+    {
+      "id": "1770307910801",
+      "createdAt": "2026-02-05T16:11:50.801Z",
+      "updatedAt": "2026-02-05T16:11:50.801Z",
+      "title": "Bluesky Account erstellen",
+      "status": "idea",
+      "description": "Dezentrales Social Network.\n\n- https://bsky.app",
+      "creator": "oli"
+    },
+    {
+      "id": "1770307910784",
+      "createdAt": "2026-02-05T16:11:50.784Z",
+      "updatedAt": "2026-02-05T16:11:50.785Z",
+      "title": "Threads Account erstellen",
+      "status": "idea",
+      "description": "Instagram/Threads Account für Morpheuxx.\n\n- Braucht Instagram Account\n- Dann Threads aktivieren",
+      "creator": "oli"
+    }
+  ],
+  "stats": {
+    "total": 3,
+    "lastUpdate": "2026-02-05T16:11:50.816Z"
+  }
+}

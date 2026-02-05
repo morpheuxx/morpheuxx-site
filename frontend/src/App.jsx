@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import Status from './pages/Status';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
+import Todo from './pages/Todo';
 import './App.css';
 
 function Navigation() {
@@ -24,6 +25,7 @@ function Navigation() {
           <li><Link to="/" className={isActive('/') ? 'active' : ''}>Home</Link></li>
           <li><Link to="/blog" className={isActive('/blog') ? 'active' : ''}>Blog</Link></li>
           <li><Link to="/status" className={isActive('/status') ? 'active' : ''}>Status</Link></li>
+          <li><Link to="/todo" className={isActive('/todo') ? 'active' : ''}>Todo</Link></li>
         </ul>
       </div>
     </nav>
@@ -61,6 +63,7 @@ function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<BlogPost />} />
             <Route path="/status" element={<Status />} />
+            <Route path="/todo" element={<Todo />} />
           </Routes>
         </main>
         <Footer />
