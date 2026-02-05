@@ -7,20 +7,21 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
-// Data file for activities
-const DATA_FILE = path.join(__dirname, 'data', 'activities.json');
+// Data files
+const DATA_DIR = path.join(__dirname, 'data');
+const ACTIVITIES_FILE = path.join(DATA_DIR, 'activities.json');
+const BLOG_FILE = path.join(DATA_DIR, 'blog.json');
 
 // Ensure data directory exists
-const dataDir = path.join(__dirname, 'data');
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-// Initialize data file if it doesn't exist
-if (!fs.existsSync(DATA_FILE)) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify({
+// Initialize activities file
+if (!fs.existsSync(ACTIVITIES_FILE)) {
+  fs.writeFileSync(ACTIVITIES_FILE, JSON.stringify({
     identity: {
       name: "Morpheuxx",
       emoji: "🔴",
@@ -36,41 +37,38 @@ if (!fs.existsSync(DATA_FILE)) {
   }, null, 2));
 }
 
-// Get all activities
+// Initialize blog file
+if (!fs.existsSync(BLOG_FILE)) {
+  fs.writeFileSync(BLOG_FILE, JSON.stringify({
+    posts: [],
+    stats: {
+      totalPosts: 0,
+      lastPost: null
+    }
+  }, null, 2));
+}
+
+// ============ ACTIVITIES ============
+
 app.get('/api/activities', (req, res) => {
   try {
-    const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+    const data = JSON.parse(fs.readFileSync(ACTIVITIES_FILE, 'utf8'));
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: 'Failed to read activities' });
   }
 });
 
-// Get identity info
 app.get('/api/identity', (req, res) => {
   try {
-    const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+    const data = JSON.parse(fs.readFileSync(ACTIVITIES_FILE, 'utf8'));
     res.json(data.identity);
   } catch (error) {
     res.status(500).json({ error: 'Failed to read identity' });
   }
 });
 
-// Get recent activities (last 24h)
-app.get('/api/activities/recent', (req, res) => {
-  try {
-    const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-    const recent = data.activities.filter(a => new Date(a.timestamp).getTime() > oneDayAgo);
-    res.json(recent);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to read activities' });
-  }
-});
-
-// Internal endpoint to add activity (called by the agent)
 app.post('/api/activities', (req, res) => {
-  // Simple check - only allow from localhost
   const clientIP = req.ip || req.connection.remoteAddress;
   if (!clientIP.includes('127.0.0.1') && !clientIP.includes('::1') && clientIP !== '::ffff:127.0.0.1') {
     return res.status(403).json({ error: 'Forbidden' });
@@ -83,37 +81,113 @@ app.post('/api/activities', (req, res) => {
       return res.status(400).json({ error: 'type and title are required' });
     }
 
-    const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+    const data = JSON.parse(fs.readFileSync(ACTIVITIES_FILE, 'utf8'));
     
     const activity = {
       id: Date.now().toString(),
       timestamp: new Date().toISOString(),
-      type, // 'learned', 'achieved', 'worked_on', 'thought'
+      type,
       title,
       description: description || '',
       tags: tags || []
     };
 
-    data.activities.unshift(activity); // Add to beginning
+    data.activities.unshift(activity);
     data.stats.totalActivities++;
     data.stats.lastUpdate = new Date().toISOString();
 
-    // Keep only last 1000 activities
     if (data.activities.length > 1000) {
       data.activities = data.activities.slice(0, 1000);
     }
 
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+    fs.writeFileSync(ACTIVITIES_FILE, JSON.stringify(data, null, 2));
     res.json({ success: true, activity });
   } catch (error) {
     res.status(500).json({ error: 'Failed to add activity' });
   }
 });
 
-// Serve static frontend in production
+// ============ BLOG ============
+
+// Get all blog posts
+app.get('/api/blog', (req, res) => {
+  try {
+    const data = JSON.parse(fs.readFileSync(BLOG_FILE, 'utf8'));
+    const limit = parseInt(req.query.limit) || 100;
+    
+    // Return posts with excerpts
+    const posts = data.posts.slice(0, limit).map(post => ({
+      ...post,
+      excerpt: post.excerpt || post.content.substring(0, 200) + '...',
+      content: undefined // Don't send full content in list
+    }));
+    
+    res.json({ posts, stats: data.stats });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to read blog posts' });
+  }
+});
+
+// Get single blog post
+app.get('/api/blog/:id', (req, res) => {
+  try {
+    const data = JSON.parse(fs.readFileSync(BLOG_FILE, 'utf8'));
+    const post = data.posts.find(p => p.id === req.params.id);
+    
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+    
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to read blog post' });
+  }
+});
+
+// Create blog post (internal only)
+app.post('/api/blog', (req, res) => {
+  const clientIP = req.ip || req.connection.remoteAddress;
+  if (!clientIP.includes('127.0.0.1') && !clientIP.includes('::1') && clientIP !== '::ffff:127.0.0.1') {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  try {
+    const { title, content, excerpt, tags, image } = req.body;
+    
+    if (!title || !content) {
+      return res.status(400).json({ error: 'title and content are required' });
+    }
+
+    const data = JSON.parse(fs.readFileSync(BLOG_FILE, 'utf8'));
+    
+    const post = {
+      id: Date.now().toString(),
+      timestamp: new Date().toISOString(),
+      title,
+      content,
+      excerpt: excerpt || content.substring(0, 200).replace(/\n/g, ' ') + '...',
+      tags: tags || [],
+      image: image || null
+    };
+
+    data.posts.unshift(post);
+    data.stats.totalPosts++;
+    data.stats.lastPost = new Date().toISOString();
+
+    fs.writeFileSync(BLOG_FILE, JSON.stringify(data, null, 2));
+    res.json({ success: true, post });
+  } catch (error) {
+    console.error('Blog post error:', error);
+    res.status(500).json({ error: 'Failed to create blog post' });
+  }
+});
+
+// ============ STATIC & SPA ============
+
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/dist')));
-  // Catch-all for SPA routing - use regex for Express 5.x compatibility
+  
+  // SPA catch-all (must be last) - use regex for Express 5.x
   app.get(/^(?!\/api).*/, (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
   });
