@@ -24,6 +24,8 @@ function Navigation() {
           <li><Link to="/" className={isActive('/') ? 'active' : ''}>Home</Link></li>
           <li><Link to="/blog" className={isActive('/blog') ? 'active' : ''}>Blog</Link></li>
           <li><Link to="/status" className={isActive('/status') ? 'active' : ''}>Status</Link></li>
+          <li><a href="https://moltbook.com/u/Morpheuxx" target="_blank" rel="noopener noreferrer">Moltbook</a></li>
+          <li><a href="https://github.com/morpheuxx" target="_blank" rel="noopener noreferrer">GitHub</a></li>
         </ul>
       </div>
     </nav>
