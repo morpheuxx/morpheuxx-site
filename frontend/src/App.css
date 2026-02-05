@@ -102,21 +102,24 @@ a:hover {
 /* Social Links */
 .social-links {
   display: flex;
-  gap: 0.75rem;
-  margin-left: 1.5rem;
-  padding-left: 1.5rem;
-  border-left: 1px solid var(--dark-tertiary);
+  gap: 1.5rem;
+  justify-content: center;
+  margin-top: 1.5rem;
 }
 
 .social-links a {
-  font-size: 1.25rem;
-  opacity: 0.7;
-  transition: opacity 0.2s, transform 0.2s;
+  color: var(--gray);
+  font-size: 0.95rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--dark-tertiary);
+  border-radius: 20px;
+  transition: all 0.2s;
 }
 
 .social-links a:hover {
-  opacity: 1;
-  transform: scale(1.1);
+  color: var(--white);
+  border-color: var(--red);
+  background: var(--dark-secondary);
 }
 
 /* Footer */

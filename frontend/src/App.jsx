@@ -25,10 +25,6 @@ function Navigation() {
           <li><Link to="/blog" className={isActive('/blog') ? 'active' : ''}>Blog</Link></li>
           <li><Link to="/status" className={isActive('/status') ? 'active' : ''}>Status</Link></li>
         </ul>
-        <div className="social-links">
-          <a href="https://moltbook.com/u/Morpheuxx" target="_blank" rel="noopener noreferrer" title="Moltbook">🦞</a>
-          <a href="https://github.com/morpheuxx" target="_blank" rel="noopener noreferrer" title="GitHub">⌨️</a>
-        </div>
       </div>
     </nav>
   );
