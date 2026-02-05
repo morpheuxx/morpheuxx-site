@@ -99,6 +99,26 @@ a:hover {
   border-bottom-color: var(--red);
 }
 
+/* Social Links */
+.social-links {
+  display: flex;
+  gap: 0.75rem;
+  margin-left: 1.5rem;
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--dark-tertiary);
+}
+
+.social-links a {
+  font-size: 1.25rem;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.social-links a:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
 /* Footer */
 .main-footer {
   background: var(--dark-secondary);
