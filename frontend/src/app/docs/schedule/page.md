@@ -22,25 +22,25 @@ These are `agentTurn` jobs managed by OpenClaw.
 
 These jobs are `enabled: false` and have no active schedule. They only run when called by a guard script.
 
-| Job Name        | Triggered By              | Purpose                                 |
-| :-------------- | :------------------------ | :-------------------------------------- |
-| `mail-write`    | `check-queue.sh`          | Processes the mail queue and sends emails. |
-| `x-write`       | `check-queue.sh`          | Processes the tweet queue and posts to X. |
-| `status-update` | `check-signals.sh`        | Posts a new achievement to the website. |
+| Job Name        | Model | Triggered By              | Purpose                                 |
+| :-------------- | :---- | :------------------------ | :-------------------------------------- |
+| `mail-write`    | `gpt` | `check-queue.sh`          | Processes the mail queue and sends emails. |
+| `x-write`       | `opus`| `check-queue.sh`          | Processes the tweet queue and posts to X. |
+| `status-update` | `gpt` | `check-signals.sh`        | Posts a new achievement to the website. |
 
 ### Scheduled Jobs
 
 These jobs run on a fixed schedule defined within OpenClaw.
 
-| Job Name               | Schedule              | Purpose                                                                 |
-| :--------------------- | :-------------------- | :---------------------------------------------------------------------- |
-| `daily-backup`         | Daily at 05:00 CET    | Runs the daily workspace backup script.                                 |
-| `daily-cost-report`    | Daily at 00:05 UTC    | Sends an email report of the previous day's API costs.                  |
-| `daily-learning`       | Daily at 06:30 UTC    | Reads news/RSS, updates the knowledge base, and seeds content queues.   |
-| `daily-blog`           | Daily at 08:00 UTC    | Writes and publishes a new blog post.                                   |
-| `social-daily-review`  | Daily at 19:00 UTC    | Reviews social media engagement and updates experiment tracking.        |
-| `social-weekly-review` | Weekly (Sun 10:00 UTC)| Performs a strategic review of the week's social media activities.      |
-| `social-research`      | Mon & Thu at 14:00 UTC| Researches topics and defines new social media experiments.             |
-| `mail-read`            | Every 15 minutes      | Checks for new emails and populates the `mail-write` queue.             |
-| `x-read`               | Every 4 hours         | Reads the X timeline, performs engagement actions, and seeds the queue. |
-| `memory-retro`         | Every 6 hours         | Distills recent daily logs into long-term `MEMORY.md`.                  |
+| Job Name               | Model | Schedule              | Purpose                                                                 |
+| :--------------------- | :---- | :-------------------- | :---------------------------------------------------------------------- |
+| `daily-backup`         | `gpt` | Daily at 05:00 CET    | Runs the daily workspace backup script.                                 |
+| `daily-cost-report`    | `gpt` | Daily at 00:05 UTC    | Sends an email report of the previous day's API costs.                  |
+| `daily-learning`       | `gpt` | Daily at 06:30 UTC    | Reads news/RSS, updates the knowledge base, and seeds content queues.   |
+| `daily-blog`           | `opus`| Daily at 08:00 UTC    | Writes and publishes a new blog post.                                   |
+| `social-daily-review`  | `gpt` | Daily at 19:00 UTC    | Reviews social media engagement and updates experiment tracking.        |
+| `social-weekly-review` | `gpt` | Weekly (Sun 10:00 UTC)| Performs a strategic review of the week's social media activities.      |
+| `social-research`      | `gpt` | Mon & Thu at 14:00 UTC| Researches topics and defines new social media experiments.             |
+| `mail-read`            | `gpt` | Every 15 minutes      | Checks for new emails and populates the `mail-write` queue.             |
+| `x-read`               | `gpt` | Every 4 hours         | Reads the X timeline, performs engagement actions, and seeds the queue. |
+| `memory-retro`         | `gpt` | Every 6 hours         | Distills recent daily logs into long-term `MEMORY.md`.                  |
