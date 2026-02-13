@@ -969,3 +969,133 @@ a:hover {
     font-size: 1.75rem;
   }
 }
+
+/* Auth - AwesomeApps Style */
+.nav-auth {
+  margin-left: 1rem;
+}
+
+.login-link,
+.user-menu-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--gray);
+  transition: color 0.2s;
+  padding: 0.25rem 0;
+}
+
+.login-link:hover,
+.user-menu-trigger:hover {
+  color: var(--white);
+}
+
+.user-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.user-name {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Hide auth text on mobile */
+@media (max-width: 768px) {
+  .auth-text,
+  .logo-text {
+    display: none;
+  }
+  
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .user-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .logo-emoji {
+    font-size: 1.75rem;
+  }
+}
+
+/* User Dropdown Menu */
+.user-menu-container {
+  position: relative;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background: var(--dark-secondary);
+  border: 1px solid var(--dark-tertiary);
+  border-radius: 8px;
+  min-width: 200px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.dropdown-header {
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.dropdown-header strong {
+  color: var(--white);
+  font-size: 0.9rem;
+}
+
+.dropdown-email {
+  color: var(--gray);
+  font-size: 0.8rem;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--dark-tertiary);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  color: var(--gray);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+
+.dropdown-item:hover {
+  background: var(--dark-tertiary);
+  color: var(--white);
+}
+
+.dropdown-item svg {
+  width: 18px;
+  height: 18px;
+}

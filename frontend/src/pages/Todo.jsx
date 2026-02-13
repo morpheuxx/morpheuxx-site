@@ -43,6 +43,7 @@ function Todo() {
       const res = await fetch('/api/todos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(newTodo)
       });
       if (res.ok) {
@@ -60,6 +61,7 @@ function Todo() {
       const res = await fetch(`/api/todos/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(updates)
       });
       if (res.ok) {
@@ -77,7 +79,7 @@ function Todo() {
     if (!confirm('Wirklich löschen?')) return;
     
     try {
-      const res = await fetch(`/api/todos/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/todos/${id}`, { method: 'DELETE', credentials: 'include' });
       if (res.ok) {
         setSelectedTodo(null);
         fetchTodos();
